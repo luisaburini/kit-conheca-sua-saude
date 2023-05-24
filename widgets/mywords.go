@@ -1,6 +1,8 @@
 package widgets
 
 import (
+	"conheca/sua/saude/storage"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
@@ -9,10 +11,8 @@ import (
 type MyWords struct {
 }
 
-func GetMyWordsView() *fyne.Container {
-	savedWords := []string{
-		"Eu me sinto melhor",
-	}
+func GetMyWordsView(onTapped func(string), database *storage.Database) *fyne.Container {
+	savedWords := database.GetSentences()
 
 	return container.NewMax(widget.NewList(
 		// Length
@@ -30,5 +30,8 @@ func GetMyWordsView() *fyne.Container {
 				return
 			}
 			button.SetText(savedWords[lii])
+			button.OnTapped = func() {
+				onTapped(savedWords[lii])
+			}
 		}))
 }
