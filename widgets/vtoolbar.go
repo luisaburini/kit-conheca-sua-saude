@@ -10,14 +10,19 @@ import (
 type HToolbar struct {
 }
 
-func GetVToolbar(persistWords func(), showMyWords func()) *fyne.Container {
-	saveButton := NewPictogram(resources.GetIconSave(), "Salvar")
+func GetVToolbar(persistWords func(), showMyWords func(), clearEntry func()) *fyne.Container {
+	saveButton := NewPictogram(resources.IconSave(), "Salvar")
 	saveButton.SetOnTapped(func() {
 		persistWords()
+		clearEntry()
 	})
-	myWordsButton := NewPictogram(resources.GetIconMinhasFrases(), "Minhas Frases")
+	myWordsButton := NewPictogram(resources.IconMySentences(), "Minhas Frases")
 	myWordsButton.SetOnTapped(func() {
 		showMyWords()
 	})
-	return container.NewAdaptiveGrid(1, saveButton.GetView(), myWordsButton.GetView())
+	clearButton := NewPictogram(resources.IconClear(), "Limpar")
+	clearButton.SetOnTapped(func() {
+		clearEntry()
+	})
+	return container.NewVBox(saveButton.GetView(), myWordsButton.GetView(), clearButton.GetView())
 }

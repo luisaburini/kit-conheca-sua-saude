@@ -50,7 +50,6 @@ type Database struct {
 
 func (d *Database) GetSentences() []string {
 	rows, err := d.db.Query("SELECT * FROM sentences")
-
 	if rows.Err() != nil {
 		log.Println(rows.Err())
 		return []string{}

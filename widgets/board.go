@@ -14,7 +14,7 @@ import (
 
 func GetBoardView(w fyne.Window, database *storage.Database) *fyne.Container {
 	var screen *fyne.Container
-	grid := container.NewAdaptiveGrid(6)
+	grid := container.NewAdaptiveGrid(3)
 	texts := GetWords()
 	speakEntry := widget.NewEntry()
 	for i, resource := range resources.Words() {
@@ -25,10 +25,9 @@ func GetBoardView(w fyne.Window, database *storage.Database) *fyne.Container {
 		})
 		grid.Add(pictogram.GetView())
 	}
-	speakButton := widget.NewButtonWithIcon("Falar", resources.GetIconFalar(), func() {
+	speakButton := widget.NewButtonWithIcon("Falar", resources.IconSpeak(), func() {
 		audio.Play(speakEntry.Text, w)
 	})
-	clearButton := widget.NewButtonWithIcon("Limpar", resources)
 	top := container.New(layout.NewFormLayout(), speakButton, speakEntry)
 	var left *fyne.Container
 	left = GetVToolbar(func() {
@@ -40,6 +39,9 @@ func GetBoardView(w fyne.Window, database *storage.Database) *fyne.Container {
 	}, func() {
 		log.Println("Show My Words screen")
 		showMyWordsScreen(speakEntry, top, left, grid, screen, database)
+	}, func() {
+		speakEntry.Text = ""
+		speakEntry.Refresh()
 	})
 	screen = container.NewBorder(top, nil, left, nil, grid)
 	return screen

@@ -2,16 +2,20 @@ package resources
 
 import "fyne.io/fyne/v2"
 
-func GetIconFalar() *fyne.StaticResource {
+func IconSpeak() *fyne.StaticResource {
 	return resourceFalarPng
 }
 
-func GetIconMinhasFrases() *fyne.StaticResource {
+func IconMySentences() *fyne.StaticResource {
 	return resourceMinhasFrasesPng
 }
 
-func GetIconSave() *fyne.StaticResource {
+func IconSave() *fyne.StaticResource {
 	return resourceDiskettePng
+}
+
+func IconClear() *fyne.StaticResource {
+	return resourceVassouraPng
 }
 
 func Words() []*fyne.StaticResource {
