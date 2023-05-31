@@ -2,6 +2,10 @@ package resources
 
 import "fyne.io/fyne/v2"
 
+func IconBack() *fyne.StaticResource {
+	return resourceVoltarPng
+}
+
 func IconSpeak() *fyne.StaticResource {
 	return resourceFalarPng
 }

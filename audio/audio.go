@@ -141,7 +141,7 @@ func Play(sentence string, window fyne.Window) {
 // 			}
 
 // 			if k != 0 && p == 0 {
-// 				fmt.Println()
+// 				log.Println()
 // 			}
 // 			fmt.Printf("%.0fHz ", pitch)
 // 		}
@@ -172,7 +172,7 @@ func Play(sentence string, window fyne.Window) {
 // 	}
 
 // 	// take it away!
-// 	fmt.Println()
+// 	log.Println()
 // 	for section := 0; ; section++ {
 // 		// remember rhythm motifs that played in the current section
 // 		// we'll replay some of them at random for pleasant repetition

@@ -16,7 +16,6 @@ func createTable() (*sql.DB, error) {
 		log.Println("sql open " + err.Error())
 		return nil, err
 	}
-	//query, err := db.Prepare("CREATE TABLE `sentences` (`id` INTEGER PRIMARY KEY AUTOINCREMENT,`sentence` TEXT")
 	query, err := db.Prepare("CREATE TABLE `sentences` (`id` INTEGER PRIMARY KEY AUTOINCREMENT,`sentence` TEXT)")
 	if err != nil {
 		log.Println("prepare create table " + err.Error())
@@ -49,6 +48,9 @@ type Database struct {
 }
 
 func (d *Database) GetSentences() []string {
+	if d == nil || d.db == nil {
+		return []string{}
+	}
 	rows, err := d.db.Query("SELECT * FROM sentences")
 	if rows.Err() != nil {
 		log.Println(rows.Err())
@@ -80,8 +82,11 @@ func (d *Database) GetSentences() []string {
 }
 
 func (d *Database) AddSentence(s string) error {
-	if d == nil {
+	if d == nil || d.db == nil {
 		return errors.New("banco de dados é nulo")
+	}
+	if len(s) == 0 {
+		return nil
 	}
 	newSentence := sentences{
 		sentence: s,
@@ -91,22 +96,51 @@ func (d *Database) AddSentence(s string) error {
 		log.Println(err.Error())
 	}
 	res, err := stmt.Exec(nil, newSentence.sentence)
+	if err != nil {
+		log.Println(err.Error())
+	}
 	log.Println(fmt.Sprint(res.LastInsertId()))
 	log.Println(res.RowsAffected())
-	defer stmt.Close()
 	log.Println("Added " + newSentence.sentence)
-	return err
+	return stmt.Close()
 }
 
 func (d *Database) RemoveSentence(s string) error {
-	stmt, err := d.db.Prepare("")
+	if d == nil || d.db == nil {
+		return errors.New("banco de dados é nulo")
+	}
+	stmt, err := d.db.Prepare("DELETE FROM sentences WHERE id=?")
 	if err != nil {
 		return err
 	}
-	err = stmt.Close()
-	return err
+	index := d.getIndexFromStr(s)
+	res, err := stmt.Exec(index)
+	if err != nil {
+		return err
+	}
+	log.Println(fmt.Sprint(res.LastInsertId()))
+	log.Println(res.RowsAffected())
+	log.Println("Removed " + s)
+	return stmt.Close()
 }
 
 func (d *Database) Close() {
+	if d == nil || d.db == nil {
+		return
+	}
 	d.db.Close()
+}
+
+func (d *Database) getIndexFromStr(s string) int {
+	sentences := d.GetSentences()
+	index := -1
+	if d == nil || d.db == nil {
+		return -1
+	}
+	for i, sentence := range sentences {
+		if sentence == s {
+			index = i
+		}
+	}
+	return index
 }

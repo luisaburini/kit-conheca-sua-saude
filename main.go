@@ -8,10 +8,12 @@ import (
 )
 
 func main() {
+	//os.Setenv("FYNE_SCALE", "1.8")
 	a := app.New()
 	w := a.NewWindow("Kit Conheca Sua Saude")
 	database := storage.NewDatabase()
-	w.SetContent(widgets.GetBoardView(w, database))
+	defer database.Close()
+	board := widgets.NewBoard(w)
+	w.SetContent(board.GetView(database))
 	w.ShowAndRun()
-	database.Close()
 }
