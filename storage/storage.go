@@ -8,22 +8,41 @@ import (
 	"os"
 )
 
-func createTable() (*sql.DB, error) {
-	os.MkdirAll("./storage/", 0755)
-	os.Create("./storage/data.db")
-	db, err := sql.Open("sqlite3", "./storage/data.db")
+func createTables() (*sql.DB, error) {
+	// err := os.MkdirAll("./storage/", 0755)
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// }
+	_, err := os.Create("./data.db")
+	if err != nil {
+		log.Println(err.Error())
+	}
+	db, err := sql.Open("sqlite3", "./data.db")
 	if err != nil {
 		log.Println("sql open " + err.Error())
 		return nil, err
 	}
 	query, err := db.Prepare("CREATE TABLE `sentences` (`id` INTEGER PRIMARY KEY AUTOINCREMENT,`sentence` TEXT)")
 	if err != nil {
-		log.Println("prepare create table " + err.Error())
+		log.Println("prepare create sentences " + err.Error())
 		return nil, err
 	}
 	res, err := query.Exec()
 	if err != nil {
-		log.Println("exec create table " + err.Error())
+		log.Println("exec create sentences " + err.Error())
+		return nil, err
+	}
+	log.Println(res.LastInsertId())
+	log.Println(res.RowsAffected())
+
+	query, err = db.Prepare("CREATE TABLE `board` (`id` INTEGER PRIMARY KEY AUTOINCREMENT,`word` TEXT)")
+	if err != nil {
+		log.Println("prepare create board " + err.Error())
+		return nil, err
+	}
+	res, err = query.Exec()
+	if err != nil {
+		log.Println("exec create board " + err.Error())
 		return nil, err
 	}
 	log.Println(res.LastInsertId())
@@ -32,9 +51,9 @@ func createTable() (*sql.DB, error) {
 }
 
 func NewDatabase() *Database {
-	db, err := createTable()
+	db, err := createTables()
 	if err != nil {
-		log.Println("createTable: " + err.Error())
+		log.Println("createTables: " + err.Error())
 		return nil
 	}
 	database := &Database{
@@ -45,6 +64,73 @@ func NewDatabase() *Database {
 
 type Database struct {
 	db *sql.DB
+}
+
+func (d *Database) SetBoard(words []string) {
+	if d == nil || d.db == nil {
+		return
+	}
+	if len(words) == 0 {
+		return
+	}
+	for _, w := range words {
+		newWord := word{
+			text: w,
+		}
+		stmt, err := d.db.Prepare("INSERT INTO board(id, word) VALUES (?,?)")
+		if err != nil {
+			log.Println(err.Error())
+		}
+		res, err := stmt.Exec(nil, newWord.text)
+		if err != nil {
+			log.Println(err.Error())
+		}
+		log.Println(fmt.Sprint(res.LastInsertId()))
+		log.Println(res.RowsAffected())
+		log.Println("Added " + newWord.text)
+	}
+}
+
+func (d *Database) GetBoard() []string {
+	// return []string{
+	// 	"Anticoncepcional",
+	// 	"Boca",
+	// 	"Coração",
+	// 	"Saúde Mental",
+	// 	"Sexo",
+	// 	"Vulva",
+	// }
+	if d == nil || d.db == nil {
+		return []string{}
+	}
+	rows, err := d.db.Query("SELECT * FROM board")
+	if rows.Err() != nil {
+		log.Println(rows.Err())
+		return []string{}
+	}
+	if err != nil {
+		log.Println(err.Error())
+		return []string{}
+	}
+	boardWords := []string{}
+	for rows.Next() {
+		w := word{}
+		err = rows.Scan(&w.id, &w.text)
+		if err != nil {
+			log.Fatal(err)
+			return boardWords
+		}
+		boardWords = append(boardWords, w.text)
+	}
+	if rows.Err() != nil {
+		log.Println(rows.Err())
+	}
+	err = rows.Close()
+
+	if err != nil {
+		return []string{}
+	}
+	return boardWords
 }
 
 func (d *Database) GetSentences() []string {
@@ -60,7 +146,7 @@ func (d *Database) GetSentences() []string {
 		log.Println(err.Error())
 		return []string{}
 	}
-	dbSentences := make([]string, 0)
+	dbSentences := []string{}
 	for rows.Next() {
 		s := sentences{}
 		err = rows.Scan(&s.id, &s.sentence)

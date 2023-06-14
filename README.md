@@ -35,3 +35,35 @@ export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin:$ANDROID_HOME/platform-tools/
 ```
 fyne package -os android -appID conheca.sua.saude -icon assets/icons/icon.png
 ```
+
+# Build com gomobile
+
+A partir da versão 24 da NDK não haverá suporte às APIs 16,17,18 (Jelly Bean). Dessa forma a versão mínima suportada é 19 (KitKat). Ver [discussão](https://groups.google.com/g/golang-nuts/c/O9EMK3mMk9Y)
+
+```
+gomobile build -v -androidapi=19
+```
+
+# Deploy
+
+Subir o emulador em ~/Android/Sdk/emulator/ , executar
+
+```
+./emulator -avd Pixel_6_Pro_API_33
+```
+
+OBS.: Substituir Pixel_6_Pro_API_33 pelo modelo instalado no SDK Manager do Android Studio
+
+Para instalar o .apk no emulador
+
+```
+adb install /caminho/para/.apk
+```
+
+# Debug
+
+Para acompanhar os logs do Fyne
+
+```
+adb logcat | grep "Fyne
+```

@@ -10,20 +10,20 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-type MyWords struct {
+type MySentences struct {
 	wordsList  *widget.List
 	savedWords []string
 	database   *storage.Database
 }
 
-func NewMyWords(onTapped func(string), database *storage.Database) *MyWords {
-	var myWords *MyWords
-	myWords = &MyWords{
+func NewMySentences(onTapped func(string), database *storage.Database) *MySentences {
+	var mySentences *MySentences
+	mySentences = &MySentences{
 		database: database,
 		wordsList: widget.NewList(
 			// Length
 			func() int {
-				return len(myWords.savedWords)
+				return len(mySentences.savedWords)
 			},
 			// Create
 			func() fyne.CanvasObject {
@@ -35,21 +35,21 @@ func NewMyWords(onTapped func(string), database *storage.Database) *MyWords {
 				if !ok {
 					return
 				}
-				button.SetText(myWords.savedWords[lii])
+				button.SetText(mySentences.savedWords[lii])
 				button.OnTapped = func() {
-					onTapped(myWords.savedWords[lii])
+					onTapped(mySentences.savedWords[lii])
 				}
 			}),
 	}
-	myWords.savedWords = database.GetSentences()
-	return myWords
+	mySentences.savedWords = database.GetSentences()
+	return mySentences
 }
 
-func (mw *MyWords) GetView() *fyne.Container {
+func (mw *MySentences) GetView() *fyne.Container {
 	return container.New(layout.NewPaddedLayout(), mw.wordsList)
 }
 
-func (mw *MyWords) Refresh() {
+func (mw *MySentences) Refresh() {
 	if mw != nil {
 		mw.savedWords = mw.database.GetSentences()
 		mw.wordsList.Refresh()

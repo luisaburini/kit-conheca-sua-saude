@@ -5,15 +5,15 @@ import (
 	"conheca/sua/saude/widgets"
 
 	"fyne.io/fyne/v2/app"
+	//_ "golang.org/x/mobile/app"
 )
 
 func main() {
-	//os.Setenv("FYNE_SCALE", "1.8")
-	a := app.New()
-	w := a.NewWindow("Kit Conheca Sua Saude")
+	app := app.New()
+	window := app.NewWindow("Kit Conheca Sua Saude")
 	database := storage.NewDatabase()
 	defer database.Close()
-	board := widgets.NewBoard(w)
-	w.SetContent(board.GetView(database))
-	w.ShowAndRun()
+	board := widgets.NewBoard(database, window)
+	window.SetContent(board.GetView())
+	window.ShowAndRun()
 }

@@ -2,6 +2,7 @@ package widgets
 
 import (
 	"image/color"
+	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -29,40 +30,47 @@ func (t *tappableIcon) TappedSecondary(_ *fyne.PointEvent) {
 	t.onTapped()
 }
 
-// func NewPictogram(text string, resource *fyne.StaticResource, onTapped func()) *Pictogram {
-// 	pictogram := &Pictogram{}
-// 	pictogram.label = canvas.NewText(text, color.Black)
-// 	pictogram.label.TextSize = 15
-// 	pictogram.label.Alignment = fyne.TextAlignCenter
-// 	pictogram.icon = newTappableIcon(resource)
-// 	pictogram.word = text
-// 	pictogram.c = container.NewGridWithColumns(1, pictogram.label, pictogram.icon)
-// 	pictogram.SetOnTapped(onTapped)
-// 	return pictogram
-// }
+const SQUARE_PERIMETER = 4
 
-func NewPictogram() *Pictogram {
-	p := &Pictogram{}
-	p.Container = container.NewGridWithColumns(1, p.Label, p.Icon)
-	return p
+func NewPictogram(text string, resource fyne.Resource) *Pictogram {
+	pictogram := &Pictogram{}
+	pictogram.selectedNumber = canvas.NewText("", color.Black)
+	pictogram.selectedNumber.TextSize = 15
+	pictogram.selectedNumber.Hide()
+	pictogram.Label = canvas.NewText(text, color.Black)
+	pictogram.Label.TextSize = 15
+	pictogram.Label.Alignment = fyne.TextAlignCenter
+	pictogram.Icon = newTappableIcon(resource)
+	pictogram.Word = text
+	for i := 0; i < SQUARE_PERIMETER; i++ {
+		pictogram.frame = append(pictogram.frame, canvas.NewRectangle(color.Black))
+	}
+	board := container.NewGridWithColumns(1, pictogram.Label, pictogram.Icon)
+	pictogram.Container = container.NewBorder(pictogram.frame[0], pictogram.frame[1],
+		pictogram.frame[2], pictogram.frame[3], pictogram.selectedNumber, board)
+	pictogram.hideFrame()
+	return pictogram
 }
 
 type Pictogram struct {
-	word      string
-	Icon      *tappableIcon
-	Label     *canvas.Text
-	Container *fyne.Container
-	isHidden  bool
+	Word           string
+	Icon           *tappableIcon
+	Label          *canvas.Text
+	selectedNumber *canvas.Text
+	frame          []*canvas.Rectangle
+	Container      *fyne.Container
+	isHidden       bool
+	isSelected     bool
 }
 
 func (p *Pictogram) SetText(text string) {
 	p.Label = canvas.NewText(text, color.Black)
 	p.Label.TextSize = 15
 	p.Label.Alignment = fyne.TextAlignCenter
-	p.word = text
+	p.Word = text
 }
 
-func (p *Pictogram) SetResource(resource *fyne.StaticResource) {
+func (p *Pictogram) SetResource(resource fyne.Resource) {
 	p.Icon = newTappableIcon(resource)
 }
 
@@ -74,8 +82,38 @@ func (p *Pictogram) GetView() *fyne.Container {
 	return p.Container
 }
 
+func (p *Pictogram) SetNumber(n int) {
+	p.selectedNumber.Text = strconv.Itoa(n)
+	p.selectedNumber.Refresh()
+}
+
+func (p *Pictogram) Select(n int) {
+	if p.isSelected {
+		p.hideFrame()
+		p.selectedNumber.Hide()
+	} else {
+		p.selectedNumber.Text = strconv.Itoa(n)
+		p.selectedNumber.Show()
+		p.showFrame()
+	}
+	p.isSelected = !p.isSelected
+	p.Refresh()
+}
+
+func (p *Pictogram) hideFrame() {
+	for i := 0; i < SQUARE_PERIMETER; i++ {
+		p.frame[i].Hide()
+	}
+}
+
+func (p *Pictogram) showFrame() {
+	for i := 0; i < SQUARE_PERIMETER; i++ {
+		p.frame[i].Show()
+	}
+}
+
 func (p *Pictogram) GetWord() string {
-	return p.word
+	return p.Word
 }
 
 func (p *Pictogram) Hide() {
@@ -116,6 +154,10 @@ func (p *Pictogram) Refresh() {
 	p.Icon.Refresh()
 	p.Label.Refresh()
 	p.Container.Refresh()
+	for i := 0; i < SQUARE_PERIMETER; i++ {
+		p.frame[i].Refresh()
+	}
+	p.selectedNumber.Refresh()
 }
 
 func (p *Pictogram) Resize(size fyne.Size) {

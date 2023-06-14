@@ -1,2 +1,6 @@
 [Details]
-  Build = 48
+  Icon = "./assets/icons/bancoDeDados.png"
+  Name = "Saude"
+  ID = "conheca.sua.saude"
+  Version = "1.0.0"
+  Build = 74

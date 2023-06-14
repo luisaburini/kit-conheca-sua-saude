@@ -1,9 +1,22 @@
 package widgets
 
+import (
+	"image/color"
+
+	"fyne.io/fyne/v2/canvas"
+)
+
 type Word struct {
+	text *canvas.Text
 }
 
-func GetWords() []string {
+func NewWord(content string, color color.Color) *Word {
+	return &Word{
+		text: canvas.NewText(content, color),
+	}
+}
+
+func GetCollection() []string {
 	return []string{
 		"Anticoncepcional",
 		"Boca",
