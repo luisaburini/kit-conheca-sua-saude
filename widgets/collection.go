@@ -3,7 +3,6 @@ package widgets
 import (
 	"conheca/sua/saude/resources"
 	"fmt"
-	"log"
 	"sort"
 	"sync"
 
@@ -31,7 +30,7 @@ func NewCollectionView() *CollectionView {
 		c.view = container.NewMax()
 	} else {
 		for _, text := range collection {
-			log.Println(text)
+			//log.Println(text)
 			pictogram := NewPictogram(text, textResources[text])
 			pictogram.SetOnTapped(func() {
 				c.onSelectPictogram(pictogram)

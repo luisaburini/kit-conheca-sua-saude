@@ -1,7 +1,10 @@
 package widgets
 
 import (
+	"conheca/sua/saude/controllers"
 	"conheca/sua/saude/resources"
+	"fmt"
+	"log"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -38,12 +41,15 @@ func NewToolbar() *Toolbar {
 	return t
 }
 
-func (t *Toolbar) GetView(callbacks []func(), state State) *fyne.Container {
+func (t *Toolbar) GetView(callbacks []func(), state controllers.State) *fyne.Container {
+	fmt.Println("Callbacks len " + fmt.Sprint(len(callbacks)))
+	t.view.RemoveAll()
 	for _, buttonInfo := range getButtonInfo(callbacks) {
 		t.view.Add(widget.NewButtonWithIcon(buttonInfo.Text,
 			buttonInfo.Icon,
 			buttonInfo.OnTapped))
 	}
+	t.ChangeState(state)
 	return t.view
 }
 
@@ -53,6 +59,39 @@ func (t *Toolbar) Hide(button int) {
 
 func (t *Toolbar) Show(button int) {
 	t.view.Objects[button].Show()
+}
+
+func (t *Toolbar) ChangeState(s controllers.State) {
+	fmt.Println("state " + fmt.Sprint(s) + fmt.Sprint(len(t.view.Objects)))
+	switch s {
+	case controllers.Collection:
+		log.Println("Going to show collection view")
+		t.Hide(Speak)
+		t.Hide(PersistWords)
+		t.Show(ShowMySentences)
+		t.Show(ShowHome)
+		t.Hide(ClearEntry)
+		t.Hide(ShowCollection)
+		t.Show(SaveCollection)
+	case controllers.Home:
+		log.Println("Going to show home")
+		t.Show(Speak)
+		t.Show(PersistWords)
+		t.Show(ShowMySentences)
+		t.Hide(ShowHome)
+		t.Show(ClearEntry)
+		t.Show(ShowCollection)
+		t.Hide(SaveCollection)
+	case controllers.SentenceList:
+		log.Println("Going to show sentence list")
+		t.Show(Speak)
+		t.Show(PersistWords)
+		t.Hide(ShowMySentences)
+		t.Show(ShowHome)
+		t.Hide(ClearEntry)
+		t.Hide(ShowCollection)
+		t.Hide(SaveCollection)
+	}
 }
 
 func getButtonInfo(callbacks []func()) []ButtonInfo {

@@ -46,8 +46,8 @@ func NewPictogram(text string, resource fyne.Resource) *Pictogram {
 		pictogram.frame = append(pictogram.frame, canvas.NewRectangle(color.Black))
 	}
 	board := container.NewGridWithColumns(1, pictogram.Label, pictogram.Icon)
-	pictogram.Container = container.NewBorder(pictogram.frame[0], pictogram.frame[1],
-		pictogram.frame[2], pictogram.frame[3], pictogram.selectedNumber, board)
+	pictogram.Container = container.NewBorder(nil, pictogram.frame[1],
+		nil, pictogram.frame[3], pictogram.selectedNumber, board)
 	pictogram.hideFrame()
 	return pictogram
 }

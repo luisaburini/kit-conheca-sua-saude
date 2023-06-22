@@ -2,6 +2,7 @@ package widgets
 
 import (
 	"conheca/sua/saude/audio"
+	"conheca/sua/saude/controllers"
 	"conheca/sua/saude/resources"
 	"conheca/sua/saude/storage"
 	"fmt"
@@ -12,24 +13,16 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-type State uint8
-
-const (
-	Home         State = 0
-	SentenceList State = 1
-	Collection   State = 2
-)
-
 type Board struct {
-	state State
-
-	speakEntry *widget.Entry
-	database   *storage.Database
-	screen     *fyne.Container
-	vscroll    *fyne.Container
-	window     fyne.Window
-	myWords    *MySentences
-	collection *CollectionView
+	stateManager *controllers.StateManager
+	toolbar      *Toolbar
+	speakEntry   *widget.Entry
+	database     *storage.Database
+	screen       *fyne.Container
+	vscroll      *fyne.Container
+	window       fyne.Window
+	myWords      *MySentences
+	collection   *CollectionView
 }
 
 func NewBoard(database *storage.Database, window fyne.Window) *Board {
@@ -38,12 +31,29 @@ func NewBoard(database *storage.Database, window fyne.Window) *Board {
 		window:     window,
 		database:   database,
 		collection: NewCollectionView(),
+		toolbar:    NewToolbar(),
 	}
 	board.vscroll = board.initVScroll()
 	board.speakEntry.MultiLine = true
 	board.speakEntry.Wrapping = fyne.TextWrapWord
-	board.screen = container.NewMax()
+	board.stateManager = controllers.NewStateManager(board.onStateChange)
+	board.screen = container.NewMax(board.toolbar.GetView(board.toolbarCallbacks(), board.stateManager.GetState()))
 	return board
+}
+
+func (b *Board) toolbarCallbacks() []func() {
+	return []func(){
+		func() { // Speak
+			audio.Play(b.speakEntry.Text, b.window)
+			//audio.Play()
+		},
+		b.persist,               // PersistWords
+		b.showMySentencesScreen, // ShowMySentences
+		b.showHome,              // ShowHome
+		b.clearSpeakEntry,       // ClearEntry
+		b.showCollection,        // ShowCollection
+		func() {},
+	}
 }
 
 func (b *Board) GetView() *fyne.Container {
@@ -54,56 +64,26 @@ func (b *Board) GetView() *fyne.Container {
 	return b.screen
 }
 
-func (b *Board) showScreen() {
-	fmt.Println(b.state)
-	b.screen.RemoveAll()
-	toolbar := NewToolbar()
-	toolbarView := toolbar.GetView(
-		[]func(){
-			func() { // Speak
-				audio.Play(b.speakEntry.Text, b.window)
-				//audio.Play()
-			},
-			b.persist,               // PersistWords
-			b.showMySentencesScreen, // ShowMySentences
-			b.showHome,              // ShowHome
-			b.clearSpeakEntry,       // ClearEntry
-			b.showCollection,        // ShowCollection
-			func() {},
-		}, b.state)
+func (b *Board) onStateChange() {
+	state := b.stateManager.GetState()
+	fmt.Println(state)
+	b.toolbar.ChangeState(state)
+	b.changeScreen(state)
+}
 
-	switch b.state {
-	case Collection:
-		log.Println("Going to show collection view")
-		toolbar.Hide(Speak)
-		toolbar.Hide(PersistWords)
-		toolbar.Show(ShowMySentences)
-		toolbar.Show(ShowHome)
-		toolbar.Hide(ClearEntry)
-		toolbar.Hide(ShowCollection)
-		toolbar.Show(SaveCollection)
+func (b *Board) changeScreen(state controllers.State) {
+	b.screen.RemoveAll()
+	fmt.Println("Before Toolbar view " + fmt.Sprint(state))
+	toolbarView := b.toolbar.GetView(b.toolbarCallbacks(), state)
+	fmt.Println("After Toolbar view")
+	switch state {
+	case controllers.Collection:
 		b.screen.Add(container.NewBorder(toolbarView, nil, nil, nil, b.collection.GetView()))
-	case Home:
-		log.Println("Going to show home")
-		toolbar.Show(Speak)
-		toolbar.Show(PersistWords)
-		toolbar.Show(ShowMySentences)
-		toolbar.Hide(ShowHome)
-		toolbar.Show(ClearEntry)
-		toolbar.Show(ShowCollection)
-		toolbar.Hide(SaveCollection)
+	case controllers.Home:
 		b.screen.Add(container.NewBorder(container.NewVBox(toolbarView, container.NewPadded(b.speakEntry)),
 			nil, nil, nil,
 			b.initVScroll()))
-	case SentenceList:
-		log.Println("Going to show sentence list")
-		toolbar.Show(Speak)
-		toolbar.Show(PersistWords)
-		toolbar.Hide(ShowMySentences)
-		toolbar.Show(ShowHome)
-		toolbar.Hide(ClearEntry)
-		toolbar.Hide(ShowCollection)
-		toolbar.Hide(SaveCollection)
+	case controllers.SentenceList:
 		b.screen.Add(container.NewBorder(container.NewVBox(toolbarView, container.NewPadded(b.speakEntry)),
 			nil, nil, nil,
 			b.myWords.GetView()))
@@ -113,20 +93,17 @@ func (b *Board) showScreen() {
 
 func (b *Board) showHome() {
 	log.Println("showHome")
-	b.state = Home
-	b.showScreen()
+	b.stateManager.SetState(controllers.Home)
 }
 
 func (b *Board) showMySentencesScreen() {
 	log.Println("showMySentencesScreen")
-	b.state = SentenceList
-	b.showScreen()
+	b.stateManager.SetState(controllers.SentenceList)
 }
 
 func (b *Board) showCollection() {
 	log.Println("showCollection")
-	b.state = Collection
-	b.showScreen()
+	b.stateManager.SetState(controllers.Collection)
 }
 
 func (b *Board) persist() {
