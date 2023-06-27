@@ -1,6 +1,28 @@
 # Kit Conheça Sua Saúde
 Kit Conheça Sua Saúde para pessoas com deficiência e dificuldade de vocalização
 
+## Telas
+
+Acervo
+
+![Acervo](./assets/screenshots/Acervo.png)
+
+Seleção dos pictogramas
+
+![Seleção dos pictogramas](./assets/screenshots/Selecao.png)
+
+Prancha com pictogramas selecionados
+
+![Prancha com pictogramas selecionados](./assets/screenshots/Prancha.png)
+
+Composição da frase
+
+![Composição da frase](./assets/screenshots/CompFrase.png)
+
+Representação gráfica indicando a voz lendo a frase composta
+
+![Representação gráfica indicando a voz lendo a frase composta](./assets/screenshots/RepGraficaSom.png)
+
 # Dependências
 
 - Instale o Go a partir das instruções indicadas no [site oficial](https://go.dev/doc/install)
@@ -9,6 +31,7 @@ Kit Conheça Sua Saúde para pessoas com deficiência e dificuldade de vocaliza�
 ```
 go get -u fyne.io/fyne/v2@latest
 go install fyne.io/fyne/v2/cmd/fyne@latest
+
 ```
 - Instale o gomobile
 
