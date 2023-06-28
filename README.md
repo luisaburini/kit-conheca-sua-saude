@@ -1,57 +1,3 @@
-    # Kit Conheça Sua Saúde
-    Kit Conheça Sua Saúde para pessoas com deficiência e dificuldade de vocalização
-
-    ## Telas
-
-    Acervo
-
-    ![Acervo](./assets/screenshots/Acervo.png =200x)
-
-    Seleção dos pictogramas
-
-    ![Seleção dos pictogramas](./assets/screenshots/Selecao.png =200x)
-
-    Prancha com pictogramas selecionados
-
-    ![Prancha com pictogramas selecionados](./assets/screenshots/Prancha.png =200x)
-
-    Composição da frase
-
-    ![Composição da frase](./assets/screenshots/CompFrase.png =200x)
-
-    Representação gráfica indicando a voz lendo a frase composta
-
-    ![Representação gráfica indicando a voz lendo a frase composta](./assets/screenshots/RepGraficaSom.png =200x)
-
-    # Dependências
-
-    - Instale o Go a partir das instruções indicadas no [site oficial](https://go.dev/doc/install)
-    - Instale o fyne 
-
-    ```
-    go get -u fyne.io/fyne/v2@latest
-    go install fyne.io/fyne/v2/cmd/fyne@latest
-
-    ```
-    - Instale o gomobile
-
-    ```
-    go get -u golang.org/x/mobile/cmd/gomobile
-    go install golang.org/x/mobile/cmd/gomobile@latest
-    ```
-
-    - Instale o [Android Studio](https://developer.android.com/studio?gclid=CjwKCAjw9J2iBhBPEiwAErwpebXq0FBhXqHl31GT0I3iap_P7QUwcb9LBByaPrUI5BjT0T90DRkxORoCG8cQAvD_BwE&gclsrc=aw.ds)
-    - Faça as instalações no SDK Manager do Android Studio
-    - Defina as variáveis $GOPATH, $ANDROID_HOME, $ANDROID_NDK_HOME 
-
-
-    ```
-    export GOPATH=$HOME/go/bin/
-    export ANDROID_HOME=$HOME/Android/Sdk
-    export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/25.2.9519653
-    export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin:$ANDROID_HOME/platform-tools/
-    ```
-
 # Kit Conheça Sua Saúde
 Kit Conheça Sua Saúde para pessoas com deficiência e dificuldade de vocalização
 
@@ -59,23 +5,23 @@ Kit Conheça Sua Saúde para pessoas com deficiência e dificuldade de vocaliza�
 
 Acervo
 
-![Acervo](./assets/screenshots/Acervo.png =200x)
+![Acervo](./assets/screenshots/Acervo.png =x250)
 
 Seleção dos pictogramas
 
-![Seleção dos pictogramas](./assets/screenshots/Selecao.png =200x)
+![Seleção dos pictogramas](./assets/screenshots/Selecao.png =x250)
 
 Prancha com pictogramas selecionados
 
-![Prancha com pictogramas selecionados](./assets/screenshots/Prancha.png =200x)
+![Prancha com pictogramas selecionados](./assets/screenshots/Prancha.png =x250)
 
 Composição da frase
 
-![Composição da frase](./assets/screenshots/CompFrase.png =200x)
+![Composição da frase](./assets/screenshots/CompFrase.png =x250)
 
 Representação gráfica indicando a voz lendo a frase composta
 
-![Representação gráfica indicando a voz lendo a frase composta](./assets/screenshots/RepGraficaSom.png =200x)
+![Representação gráfica indicando a voz lendo a frase composta](./assets/screenshots/RepGraficaSom.png =x250)
 
 # Dependências
 
@@ -144,41 +90,3 @@ Para acompanhar os logs do Fyne
 ```
 adb logcat | grep "Fyne
 ```
-
-    # Geração do apk
-
-    ```
-    fyne package -os android -appID conheca.sua.saude -icon assets/icons/icon.png
-    ```
-
-    # Build com gomobile
-
-    A partir da versão 24 da NDK não haverá suporte às APIs 16,17,18 (Jelly Bean). Dessa forma a versão mínima suportada é 19 (KitKat). Ver [discussão](https://groups.google.com/g/golang-nuts/c/O9EMK3mMk9Y)
-
-    ```
-    gomobile build -v -androidapi=19
-    ```
-
-    # Deploy
-
-    Subir o emulador em ~/Android/Sdk/emulator/ , executar
-
-    ```
-    ./emulator -avd Pixel_6_Pro_API_33
-    ```
-
-    OBS.: Substituir Pixel_6_Pro_API_33 pelo modelo instalado no SDK Manager do Android Studio
-
-    Para instalar o .apk no emulador
-
-    ```
-    adb install /caminho/para/.apk
-    ```
-
-    # Debug
-
-    Para acompanhar os logs do Fyne
-
-    ```
-    adb logcat | grep "Fyne
-    ```
