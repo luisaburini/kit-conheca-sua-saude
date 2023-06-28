@@ -5,23 +5,23 @@ Kit Conheça Sua Saúde para pessoas com deficiência e dificuldade de vocaliza�
 
 Acervo
 
-![Acervo](./assets/screenshots/Acervo.png =x250)
+![Acervo](./assets/screenshots/Acervo.png)
 
 Seleção dos pictogramas
 
-![Seleção dos pictogramas](./assets/screenshots/Selecao.png =x250)
+![Seleção dos pictogramas](./assets/screenshots/Selecao.png)
 
 Prancha com pictogramas selecionados
 
-![Prancha com pictogramas selecionados](./assets/screenshots/Prancha.png =x250)
+![Prancha com pictogramas selecionados](./assets/screenshots/Prancha.png)
 
 Composição da frase
 
-![Composição da frase](./assets/screenshots/CompFrase.png =x250)
+![Composição da frase](./assets/screenshots/CompFrase.png)
 
 Representação gráfica indicando a voz lendo a frase composta
 
-![Representação gráfica indicando a voz lendo a frase composta](./assets/screenshots/RepGraficaSom.png =x250)
+![Representação gráfica indicando a voz lendo a frase composta](./assets/screenshots/RepGraficaSom.png)
 
 # Dependências
 
