@@ -16,9 +16,9 @@ type StateManager struct {
 type State uint8
 
 const (
-	Home         State = 0
-	SentenceList State = 1
-	Collection   State = 2
+	Home State = 0
+	//SentenceList State = 1
+	Collection State = 1
 )
 
 func (sm *StateManager) GetState() State {

@@ -13,13 +13,10 @@ import (
 )
 
 const (
-	Speak           = 0
-	PersistWords    = 1
-	ShowMySentences = 2
-	ShowHome        = 3
-	ClearEntry      = 4
-	ShowCollection  = 5
-	SaveCollection  = 6
+	Speak = iota
+	ShowHome
+	ClearEntry
+	ShowCollection
 )
 
 type ButtonInfo struct {
@@ -62,35 +59,19 @@ func (t *Toolbar) Show(button int) {
 }
 
 func (t *Toolbar) ChangeState(s controllers.State) {
-	fmt.Println("state " + fmt.Sprint(s) + fmt.Sprint(len(t.view.Objects)))
 	switch s {
 	case controllers.Collection:
 		log.Println("Going to show collection view")
 		t.Hide(Speak)
-		t.Hide(PersistWords)
-		t.Show(ShowMySentences)
 		t.Show(ShowHome)
 		t.Hide(ClearEntry)
 		t.Hide(ShowCollection)
-		t.Show(SaveCollection)
 	case controllers.Home:
 		log.Println("Going to show home")
 		t.Show(Speak)
-		t.Show(PersistWords)
-		t.Show(ShowMySentences)
 		t.Hide(ShowHome)
 		t.Show(ClearEntry)
 		t.Show(ShowCollection)
-		t.Hide(SaveCollection)
-	case controllers.SentenceList:
-		log.Println("Going to show sentence list")
-		t.Show(Speak)
-		t.Show(PersistWords)
-		t.Hide(ShowMySentences)
-		t.Show(ShowHome)
-		t.Hide(ClearEntry)
-		t.Hide(ShowCollection)
-		t.Hide(SaveCollection)
 	}
 }
 
@@ -100,19 +81,6 @@ func getButtonInfo(callbacks []func()) []ButtonInfo {
 			Text:     "Falar",
 			Icon:     resources.IconSpeak(),
 			OnTapped: callbacks[Speak],
-		},
-		{
-			Text: "Salvar",
-			Icon: resources.IconSave(),
-			OnTapped: func() {
-				callbacks[PersistWords]()
-				callbacks[ClearEntry]()
-			},
-		},
-		{
-			Text:     "Frases",
-			Icon:     resources.IconMySentences(),
-			OnTapped: callbacks[ShowMySentences],
 		},
 		{
 			Text:     "Voltar",
@@ -128,13 +96,6 @@ func getButtonInfo(callbacks []func()) []ButtonInfo {
 			Text:     "Acervo",
 			Icon:     resources.IconDatabase(),
 			OnTapped: callbacks[ShowCollection],
-		},
-		{
-			Text: "Salvar",
-			Icon: resources.IconSave(),
-			OnTapped: func() {
-				callbacks[SaveCollection]()
-			},
 		},
 	}
 }

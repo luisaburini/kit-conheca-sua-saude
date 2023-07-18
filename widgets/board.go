@@ -47,11 +47,9 @@ func (b *Board) toolbarCallbacks() []func() {
 			audio.Play(b.speakEntry.Text, b.window)
 			//audio.Play()
 		},
-		b.persist,               // PersistWords
-		b.showMySentencesScreen, // ShowMySentences
-		b.showHome,              // ShowHome
-		b.clearSpeakEntry,       // ClearEntry
-		b.showCollection,        // ShowCollection
+		b.showHome,        // ShowHome
+		b.clearSpeakEntry, // ClearEntry
+		b.showCollection,  // ShowCollection
 		func() {},
 	}
 }
@@ -83,10 +81,6 @@ func (b *Board) changeScreen(state controllers.State) {
 		b.screen.Add(container.NewBorder(container.NewVBox(toolbarView, container.NewPadded(b.speakEntry)),
 			nil, nil, nil,
 			b.initVScroll()))
-	case controllers.SentenceList:
-		b.screen.Add(container.NewBorder(container.NewVBox(toolbarView, container.NewPadded(b.speakEntry)),
-			nil, nil, nil,
-			b.myWords.GetView()))
 	}
 	b.screen.Refresh()
 }
@@ -94,11 +88,6 @@ func (b *Board) changeScreen(state controllers.State) {
 func (b *Board) showHome() {
 	log.Println("showHome")
 	b.stateManager.SetState(controllers.Home)
-}
-
-func (b *Board) showMySentencesScreen() {
-	log.Println("showMySentencesScreen")
-	b.stateManager.SetState(controllers.SentenceList)
 }
 
 func (b *Board) showCollection() {

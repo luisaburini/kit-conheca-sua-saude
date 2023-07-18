@@ -2,6 +2,10 @@ package resources
 
 import "fyne.io/fyne/v2"
 
+func GetAudioResource(word string) *fyne.StaticResource {
+	return resourceAnticoncepcionalMp3
+}
+
 func IconBack() *fyne.StaticResource {
 	return resourceVoltarPng
 }

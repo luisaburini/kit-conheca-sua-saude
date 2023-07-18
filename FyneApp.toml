@@ -1,6 +1,6 @@
 [Details]
-  Icon = "./assets/icons/vassoura.png"
+  Icon = "./assets/icons/Boca.png"
   Name = "Saude"
   ID = "conheca.sua.saude"
   Version = "1.0.0"
-  Build = 82
+  Build = 105
